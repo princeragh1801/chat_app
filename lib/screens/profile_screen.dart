@@ -15,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.user});
-  final UserChatModel user;
+  final ChatUser user;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          appBar: AppBar(title: Text(widget.user.name!)),
+          appBar: AppBar(title: Text(widget.user.name)),
           body: Form(
               key: _formKey,
               child: Container(
@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     height: mq.height * .2,
                                     width: mq.height * .2,
                                     fit: BoxFit.cover,
-                                    imageUrl: widget.user.image!,
+                                    imageUrl: widget.user.image,
                                     placeholder: (context, url) => Icon(
                                       CupertinoIcons.person,
                                       size: mq.height * 0.05,
@@ -92,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(widget.user.email!),
+                        child: Text(widget.user.email),
                       ),
                       SizedBox(
                         height: mq.height * 0.02,
@@ -107,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             }
                             return 'Required field';
                           },
-                          onSaved: (newValue) => APIs.me.name = newValue,
+                          onSaved: (newValue) => APIs.me.name = newValue!,
                           decoration: const InputDecoration(
                               hintText: 'eg Prince Raghuwanshi',
                               label: Text('Name'),
@@ -127,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: TextFormField(
                           initialValue: widget.user.about,
                           onSaved: (newValue) {
-                            APIs.me.about = newValue;
+                            APIs.me.about = newValue!;
                           },
                           validator: (value) {
                             if (value != null && value.isNotEmpty) {

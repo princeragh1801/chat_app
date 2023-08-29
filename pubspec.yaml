@@ -43,6 +43,10 @@ dependencies:
   cached_network_image: ^3.2.3
   image_picker: ^1.0.2
   firebase_storage: ^11.2.6
+  emoji_picker_flutter: ^1.6.1
+  # for access the firebase messaging (Push Notifications)
+  firebase_messaging: ^14.6.7
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
