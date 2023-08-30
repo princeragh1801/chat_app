@@ -32,6 +32,16 @@ class APIs {
               me.pushToken = token,
             }
         });
+
+    // for handling the foreground information
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   log('Got a message whilst in the foreground!');
+    //   log('Message data: ${message.data}');
+
+    //   if (message.notification != null) {
+    //     log('Message also contained a notification: ${message.notification}');
+    //   }
+    // });
   }
 
   // for sending push notifications
@@ -40,7 +50,14 @@ class APIs {
     try {
       final body = {
         "to": chatUser.pushToken,
-        "notification": {"title": chatUser.name, "body": msg}
+        "notification": {
+          "title": chatUser.name,
+          "body": msg,
+          "android_channel_id": "chats",
+        },
+        "data": {
+          "click_action": "User ID : ${me.id}",
+        },
       };
       final response =
           await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -243,7 +260,8 @@ class APIs {
         sent: time);
     final ref = firestore
         .collection('chats/${getConversationID(chatUser.id)}/messages/');
-    await ref.doc(time).set(message.toJson()).then((value) => sendPushNotification(chatUser, type == Type.text ? msg : 'Photo'));
+    await ref.doc(time).set(message.toJson()).then((value) =>
+        sendPushNotification(chatUser, type == Type.text ? msg : 'Photo'));
   }
 
   // update read status of message
@@ -286,5 +304,14 @@ class APIs {
     // then pushing the link of that image in firebase database
     final imageUrl = await ref.getDownloadURL();
     await sendMessage(chatUser, imageUrl, Type.image);
+  }
+
+  // for deleting the  current message
+  static Future<void> deleteMessage(Message message) async {
+    final id = message.fromId;
+    return firestore
+        .collection('chats/${getConversationID(id)}/messages/')
+        .doc(message.sent)
+        .delete();
   }
 }
