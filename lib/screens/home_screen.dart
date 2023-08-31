@@ -32,9 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     APIs.getSelfInfo();
     // log(APIs.me)
-    
-    // for setting user status to active
-    APIs.updateActiveStatus(true);
 
     // for updating user active status according to lifecycle events
     // resume -- active or online
@@ -42,9 +39,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     SystemChannels.lifecycle.setMessageHandler((message) {
       log('Message : $message');
-
-      if (message.toString().contains('resume')) APIs.updateActiveStatus(true);
-      if (message.toString().contains('pause')) APIs.updateActiveStatus(false);
+      if(APIs.auth.currentUser != null){
+        if (message.toString().contains('resume')) {
+          APIs.updateActiveStatus(true);
+        }
+        if (message.toString().contains('pause')){
+          APIs.updateActiveStatus(false);
+        }
+      }
       return Future.value(message);
     });
   }

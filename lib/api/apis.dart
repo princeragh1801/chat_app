@@ -308,10 +308,13 @@ class APIs {
 
   // for deleting the  current message
   static Future<void> deleteMessage(Message message) async {
-    final id = message.fromId;
-    return firestore
+    final id = message.toId;
+     firestore
         .collection('chats/${getConversationID(id)}/messages/')
         .doc(message.sent)
         .delete();
+    if (message.type == Type.image) {
+      await storage.refFromURL(message.msg).delete();
+    }
   }
 }

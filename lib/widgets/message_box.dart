@@ -27,7 +27,7 @@ class _MessageBoxState extends State<MessageBox> {
     }
       
     return InkWell(
-      onLongPress: () => _showBottomSheet(),
+      onLongPress: () => _showBottomSheet(isMe),
       child: isMe ? _showGreenBox() : _showBlueBox(),
     );
   }
@@ -139,7 +139,7 @@ class _MessageBoxState extends State<MessageBox> {
     );
   }
 
-  _showBottomSheet() {
+  _showBottomSheet(bool isMe) {
     return showModalBottomSheet(
       // backgroundColor: Colors.grey,
 
@@ -158,10 +158,12 @@ class _MessageBoxState extends State<MessageBox> {
                 children: [
                   _buttonBuilder(Icons.copy, 'Copy', Colors.blueAccent),
                   const Divider(),
-                  _buttonBuilder(Icons.edit, 'Edit Message', Colors.blueAccent),
+                  if(isMe)
+                    _buttonBuilder(Icons.edit, 'Edit Message', Colors.blueAccent),
                   _buttonBuilder(
                       Icons.delete, 'Delete Message', Colors.redAccent),
                   const Divider(),
+                  
                   _buttonBuilder(
                       Icons.remove_red_eye,
                       'Sent at ${MyDateUtil.getFormattedTime(context: context, time: widget.message.sent)}',
@@ -180,7 +182,7 @@ class _MessageBoxState extends State<MessageBox> {
         style: TextButton.styleFrom(
           padding: const EdgeInsets.all(10),
         ),
-        onPressed: () {
+        onPressed: () async{
           if (iconData == Icons.copy) {
             FlutterClipboard.copy(widget.message.msg);
             Dialogs.showSnackBar(context, 'Message Copied!');
@@ -190,11 +192,13 @@ class _MessageBoxState extends State<MessageBox> {
             Dialogs.showSnackBar(context, 'Message Edited!');
           }
           if (iconData == Icons.delete) {
-            setState(() {
-              APIs.deleteMessage(widget.message);
-            });
+            
+            await  APIs.deleteMessage(widget.message);
+            
+            // ignore: use_build_context_synchronously
             Dialogs.showSnackBar(context, 'Message Deleted!');
           }
+          // ignore: use_build_context_synchronously
           Navigator.pop(context);
         },
         icon: Icon(
