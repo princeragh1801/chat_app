@@ -7,6 +7,7 @@ import 'package:chat_app/helper/my_date_util.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/models/messages.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 class MessageBox extends StatefulWidget {
   const MessageBox({super.key, required this.message});
@@ -21,14 +22,73 @@ class _MessageBoxState extends State<MessageBox> {
   @override
   Widget build(BuildContext context) {
     bool isMe = APIs.user.uid == widget.message.fromId;
-    if (widget.message.read.isNotEmpty){
+    if (widget.message.read.isNotEmpty) {
       time = MyDateUtil.getFormattedTime(
           context: context, time: widget.message.read);
     }
-      
+
     return InkWell(
       onLongPress: () => _showBottomSheet(isMe),
       child: isMe ? _showGreenBox() : _showBlueBox(),
+    );
+  }
+
+  Widget _showImageDialog() {
+    return Expanded(
+      child: AlertDialog(
+        content: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: CachedNetworkImage(
+            imageUrl: widget.message.msg,
+            placeholder: (context, url) => const Padding(
+                padding: EdgeInsets.all(3),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                )),
+            errorWidget: (context, url, error) => const Icon(
+              Icons.image,
+              size: 70,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton.icon(
+              onPressed: () {
+                GallerySaver.saveImage(widget.message.msg);
+                Dialogs.showSnackBar(context, 'Saved to gallery!');
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.save,
+                color: Colors.greenAccent,
+              ),
+              label: const Text('Save to gallery'))
+        ],
+      ),
+    );
+  }
+
+  Widget _showImage() {
+    return InkWell(
+      onTap: () async {
+        return await showDialog(
+            context: context, builder: (context) => _showImageDialog());
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: CachedNetworkImage(
+          imageUrl: widget.message.msg,
+          placeholder: (context, url) => const Padding(
+              padding: EdgeInsets.all(8),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              )),
+          errorWidget: (context, url, error) => const Icon(
+            Icons.image,
+            size: 70,
+          ),
+        ),
+      ),
     );
   }
 
@@ -38,21 +98,7 @@ class _MessageBoxState extends State<MessageBox> {
             widget.message.msg,
             style: const TextStyle(fontSize: 15, color: Colors.black87),
           )
-        : ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: CachedNetworkImage(
-              imageUrl: widget.message.msg,
-              placeholder: (context, url) => const Padding(
-                  padding: EdgeInsets.all(8),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                  )),
-              errorWidget: (context, url, error) => const Icon(
-                Icons.image,
-                size: 70,
-              ),
-            ),
-          );
+        : _showImage();
   }
 
   Widget _showGreenBox() {
@@ -156,14 +202,17 @@ class _MessageBoxState extends State<MessageBox> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buttonBuilder(Icons.copy, 'Copy', Colors.blueAccent),
+                  widget.message.type == Type.text
+                      ? _buttonBuilder(Icons.copy, 'Copy', Colors.blueAccent)
+                      : _buttonBuilder(Icons.save, 'Save to gallery',
+                          Colors.lightGreenAccent),
                   const Divider(),
-                  if(isMe)
-                    _buttonBuilder(Icons.edit, 'Edit Message', Colors.blueAccent),
+                  if (isMe)
+                    _buttonBuilder(
+                        Icons.edit, 'Edit Message', Colors.blueAccent),
                   _buttonBuilder(
                       Icons.delete, 'Delete Message', Colors.redAccent),
                   const Divider(),
-                  
                   _buttonBuilder(
                       Icons.remove_red_eye,
                       'Sent at ${MyDateUtil.getFormattedTime(context: context, time: widget.message.sent)}',
@@ -182,7 +231,7 @@ class _MessageBoxState extends State<MessageBox> {
         style: TextButton.styleFrom(
           padding: const EdgeInsets.all(10),
         ),
-        onPressed: () async{
+        onPressed: () async {
           if (iconData == Icons.copy) {
             FlutterClipboard.copy(widget.message.msg);
             Dialogs.showSnackBar(context, 'Message Copied!');
@@ -192,11 +241,15 @@ class _MessageBoxState extends State<MessageBox> {
             Dialogs.showSnackBar(context, 'Message Edited!');
           }
           if (iconData == Icons.delete) {
-            
-            await  APIs.deleteMessage(widget.message);
-            
+            await APIs.deleteMessage(widget.message);
+
             // ignore: use_build_context_synchronously
             Dialogs.showSnackBar(context, 'Message Deleted!');
+          }
+          if (iconData == Icons.save) {
+            GallerySaver.saveImage(widget.message.msg);
+            // ignore: use_build_context_synchronously
+            Dialogs.showSnackBar(context, 'Saved to gallery!');
           }
           // ignore: use_build_context_synchronously
           Navigator.pop(context);
