@@ -46,55 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Scaffold(
           appBar: AppBar(
             title: Text(widget.user.name),
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Select theme'),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          actions: [
-                            RadioListTile(
-                              title: const Text('Default (system)'),
-                              value: 1,
-                              groupValue: selectRadio,
-                              onChanged: (val) {
-                                ThemeMode.system;
-                                setRadioVal(val!);
-                              },
-                            ),
-                            RadioListTile(
-                              title: const Text('Dark'),
-                              value: 2,
-                              groupValue: selectRadio,
-                              onChanged: (val) {
-                                ThemeMode.dark;
-                                setRadioVal(val!);
-                              },
-                            ),
-                            RadioListTile(
-                              title: const Text('Light'),
-                              value: 3,
-                              groupValue: selectRadio,
-                              onChanged: (val) {
-                                ThemeMode.light;
-                                setRadioVal(val!);
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  icon: const Icon(Icons.light_mode)),
-              const SizedBox(
-                width: 10,
-              )
-            ],
           ),
           body: Form(
               key: _formKey,
@@ -342,5 +293,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           );
         });
+  }
+
+  Widget iconButton() {
+    return IconButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Select theme'),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                actions: [
+                  RadioListTile(
+                    title: const Text('Default (system)'),
+                    value: 1,
+                    groupValue: selectRadio,
+                    onChanged: (val) {
+                      ThemeMode.system;
+                      setRadioVal(val!);
+                    },
+                  ),
+                  RadioListTile(
+                    title: const Text('Dark'),
+                    value: 2,
+                    groupValue: selectRadio,
+                    onChanged: (val) {
+                      ThemeMode.dark;
+                      setRadioVal(val!);
+                    },
+                  ),
+                  RadioListTile(
+                    title: const Text('Light'),
+                    value: 3,
+                    groupValue: selectRadio,
+                    onChanged: (val) {
+                      ThemeMode.light;
+                      setRadioVal(val!);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        icon: const Icon(Icons.light_mode));
   }
 }
