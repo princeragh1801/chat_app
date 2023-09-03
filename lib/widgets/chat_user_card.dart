@@ -109,7 +109,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                                       : DateTime.now()
                                           .millisecondsSinceEpoch.toString()
                                           ),
-                              style: const TextStyle(color: Colors.black54),
+                              // style: const TextStyle(color: Colors.black54),
                             ),
                 );
               

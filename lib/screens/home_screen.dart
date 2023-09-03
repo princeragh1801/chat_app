@@ -163,8 +163,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               }),
           floatingActionButton: Container(
+            // color: Colors.lightGreen,
             margin: const EdgeInsets.only(bottom: 20, right: 10),
             child: FloatingActionButton(
+              backgroundColor: Colors.lightGreen,
               onPressed: () => showDialog(
                 context: context,
                 builder: (context) => _addUser(),

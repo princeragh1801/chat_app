@@ -111,7 +111,7 @@ class _MessageBoxState extends State<MessageBox> {
             Icon(
               Icons.done_all,
               color:
-                  widget.message.read.isNotEmpty ? Colors.blue : Colors.black,
+                  widget.message.read.isNotEmpty ? Colors.blue : null,
             ),
             const SizedBox(
               width: 2,
@@ -121,7 +121,7 @@ class _MessageBoxState extends State<MessageBox> {
             Text(
               MyDateUtil.getFormattedTime(
                   context: context, time: widget.message.sent),
-              style: const TextStyle(fontSize: 13, color: Colors.black54),
+              style: const TextStyle(fontSize: 13,),
             ),
           ],
         ),
@@ -178,7 +178,7 @@ class _MessageBoxState extends State<MessageBox> {
           child: Text(
             MyDateUtil.getFormattedTime(
                 context: context, time: widget.message.sent),
-            style: const TextStyle(fontSize: 13, color: Colors.black54),
+            style: const TextStyle(fontSize: 13),
           ),
         ),
       ],
@@ -187,7 +187,6 @@ class _MessageBoxState extends State<MessageBox> {
 
   _showBottomSheet(bool isMe) {
     return showModalBottomSheet(
-      // backgroundColor: Colors.grey,
 
       context: context,
       shape: const RoundedRectangleBorder(
@@ -261,7 +260,7 @@ class _MessageBoxState extends State<MessageBox> {
         label: Text(
           title,
           style:
-              const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+              const TextStyle(fontWeight: FontWeight.w500, color: Colors.blueGrey),
         ));
   }
 }

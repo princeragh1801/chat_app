@@ -24,12 +24,78 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   String? profileImg;
+  int? selectRadio;
+
+  setRadioVal(int val) {
+    setState(() {
+      selectRadio = val;
+    });
+    Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectRadio = 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          appBar: AppBar(title: Text(widget.user.name)),
+          appBar: AppBar(
+            title: Text(widget.user.name),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Select theme'),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          actions: [
+                            RadioListTile(
+                              title: const Text('Default (system)'),
+                              value: 1,
+                              groupValue: selectRadio,
+                              onChanged: (val) {
+                                ThemeMode.system;
+                                setRadioVal(val!);
+                              },
+                            ),
+                            RadioListTile(
+                              title: const Text('Dark'),
+                              value: 2,
+                              groupValue: selectRadio,
+                              onChanged: (val) {
+                                ThemeMode.dark;
+                                setRadioVal(val!);
+                              },
+                            ),
+                            RadioListTile(
+                              title: const Text('Light'),
+                              value: 3,
+                              groupValue: selectRadio,
+                              onChanged: (val) {
+                                ThemeMode.light;
+                                setRadioVal(val!);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.light_mode)),
+              const SizedBox(
+                width: 10,
+              )
+            ],
+          ),
           body: Form(
               key: _formKey,
               child: Container(
@@ -168,7 +234,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                         icon: const Icon(Icons.change_circle_rounded),
                         label: const Text('UPDATE'),
-                      )
+                      ),
+                      // TextButton.icon(onPressed: (){}, icon: const Icon(Icons.settings_display), label: const Text('Theme'))
                     ],
                   ),
                 ),
@@ -226,8 +293,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         // Pick an image.
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.gallery, imageQuality: 80);
                         if (image != null) {
                           setState(() {
                             profileImg = image.path;

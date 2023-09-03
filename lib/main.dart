@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        brightness: Brightness.light,
         appBarTheme: const AppBarTheme(
           elevation: 1,
           backgroundColor: Colors.white,
@@ -41,8 +42,13 @@ class MyApp extends StatelessWidget {
           titleTextStyle: TextStyle(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
         ),
+
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark
+      ),
+      themeMode: ThemeMode.system,
       home: const SplashScreen(),
     );
   }
